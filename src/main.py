@@ -3,10 +3,10 @@ from merger import Merger
 from clipper import Clipper
 from thumb_embeder import ThumbEmbeder
 from glob import glob
-from os import path, name as osName, environ, pathsep
-import requests
-import zipfile
-import io
+from os import path, name as osName
+from requests import get
+from zipfile import ZipFile
+from io import BytesIO
 import subprocess
 
 class Program:
@@ -42,8 +42,8 @@ class Program:
             except FileNotFoundError:
                 print("ffmpeg is not installed")
                 print("Downloading ffmpeg...")
-                r = requests.get("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip")
-                z = zipfile.ZipFile(io.BytesIO(r.content))
+                r = get("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip")
+                z = ZipFile(BytesIO(r.content))
                 # get the exe files from the zip file and move them to the Windows directory
                 for file in z.namelist():
                     if path.splitext(file)[1] == ".exe":
