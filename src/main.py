@@ -2,7 +2,6 @@ from converter import Converter
 from merger import Merger
 from clipper import Clipper
 from thumb_embeder import ThumbEmbeder
-from glob import glob
 from os import path, name as osName
 from requests import get
 from zipfile import ZipFile
@@ -49,13 +48,13 @@ class Program:
                     if path.splitext(file)[1] == ".exe":
                         z.extract(file, "C:\\Windows\\System32\\")
                 print("ffmpeg downloaded")
-        option = input("1) Thumb-Embeder\n2) Video-Audio Converter\n3) Video-Merger\n4) Video-Clipper: ")
+        option = input("1) Thumb-Embeder\n2) Video-Converter\n3) Video-Merger\n4) Video-Clipper: ")
         if option == "1":
             self.getEmbeder().askForInputs()
             self.getEmbeder().embedThumbs()
         elif option == "2":
             self.getConverter().askForInputs()
-            self.getConverter().convertDirToMp3()
+            self.getConverter().convertAll()
         elif option == "3":
             self.getMerger().askForInputs()
             self.getMerger().merge()

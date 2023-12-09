@@ -35,10 +35,10 @@ class ThumbEmbeder:
             subprocess.run(["ffmpeg", "-i", video, "-i", image, "-map", "0", "-map", "1", "-c", "copy", "-c:v:1", extension, "-disposition:v:1", "attached_pic", outputPath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             # get the stdout and stderr of the command
             print("Thumbnail embedded")
-            self.removeOriginal(video, outputPath)
+            self.__removeOriginal(video, outputPath)
         except:
             print("Failed to embed thumbnail")
-    def removeOriginal(self, videoPath: str, outputPath: str):
+    def __removeOriginal(self, videoPath: str, outputPath: str):
         if self.toRemove():
             if path.exists(outputPath):
                 remove(videoPath)
