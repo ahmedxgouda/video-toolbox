@@ -8,7 +8,7 @@ This is a collection of tools for video processing. It is based on the [FFmpeg](
 
 ### Converter
 
-Converts a video file to mp3.
+Converts a video file to another format or an audio file.
 
 ### Merger
 
@@ -16,7 +16,7 @@ Merges multiple video files into one.
 
 ### ThumbEmbeder
 
-Embeds a thumbnail into a video file.
+Embeds thumbnails into video files.
 
 ### Clipper
 
@@ -26,9 +26,19 @@ Makes a clip from the seleted video
 
 ### For Windows
 
-### For Linux
+1. You can download ffmpeg and add it to the path variable, but the program will do it for you.
+2. Download the latest release from () and extract it.
+3. Run the program.
+4. Select the tool you want to use.
+5. Follow the instructions.
 
-### For MacOS
+### For Linux and MacOS
+
+1. Install ffmpeg.
+2. Download the source code.
+3. Run python3 main.py
+4. Select the tool you want to use.
+5. Follow the instructions.
 
 ## License
 
@@ -37,10 +47,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 * [FFmpeg](https://ffmpeg.org/)
-* [FFmpeg for Windows](https://ffmpeg.zeranoe.com/builds/)
+* [FFmpeg for Windows](https://www.gyan.dev/ffmpeg/builds/)
 * [FFmpeg for MacOS](https://evermeet.cx/ffmpeg/)
 * [FFmpeg for Linux](https://ffmpeg.org/download.html)
 
 ## Class Diagram
 
-![Class Diagram](Video-Toolbox.drawio.png)
+<!-- ![Class Diagram](Video-Toolbox.drawio.png) -->

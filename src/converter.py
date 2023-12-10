@@ -1,8 +1,13 @@
 from typing import List
-import subprocess
-from os import path, listdir
+from subprocess import run, DEVNULL
+from os import path, listdir, mkdir
 
 class Converter:
+    __videos: List[str] = []
+    __outputDir: str = ""
+    __isAudio: bool = False
+    __newFormat: str = ""
+    
     def setVideos(self, videos: List[str]) -> None:
         self.__videos = videos
     def getVideos(self) -> List[str]:
@@ -19,29 +24,49 @@ class Converter:
         return self.__newFormat
     def setNewFormat(self, newFormat: str) -> None:
         self.__newFormat = newFormat
+
     def askForInputs(self):
+        print("Welcome to the converter!")
         videos = []
-        self.__isAudio = input("To what do yow want to convert 1) an audio or 2) an another video format? ").lower() == "1"
-        dirOrFile = input("Do you want to convert a 1) directory or a 2) file? ")
+        self.__isAudio = input("To what do yow want to convert 1) an audio or 2) an another video format? ").strip().lower() == "1"
+        dirOrFile = input("Do you want to convert a 1) directory or a 2) file? ").strip()
         if dirOrFile.lower() == "1":
             dir = input("Enter the directory path: ")
             videos = [path.join(dir, file) for file in listdir(dir) if path.splitext(file)[1] == ".mp4"]
         else:
+            print("Enter the video paths. When you are done, press enter.")
             while True:
-                video = input("Enter video path: ")
+                video = input("Enter video path: ").strip()
                 if video == "":
                     break
                 videos.append(video)
-        self.__outputDir = input("Enter the output directory: ")
+        self.__outputDir = input("Enter the output directory: ").strip()
+        if not path.exists(self.__outputDir):
+            mkdir(self.__outputDir)
         if not self.__isAudio:
-            self.__newFormat = input("Enter the new format: ")
+            self.__newFormat = input("Enter the new format: ").strip()
         self.__videos = videos
+
     def convertToMp3(self, video: str, outputDir: str) -> None:
         outputFile = path.join(outputDir, path.basename(video).replace(".mp4", ".mp3"))
-        subprocess.run(["ffmpeg", "-i", video, "-vn", "-ar", "44100", "-ac", "2", "-ab", "192k", "-f", "mp3", outputFile])
+        # print convertion progress
+        print(f"Converting {path.basename(video)} to mp3...")
+        run(["ffmpeg", "-i", video, "-vn", "-ar", "44100", "-ac", "2", "-ab", "192k", "-f", "mp3", outputFile], stderr=DEVNULL, stdout=DEVNULL)
+        # check if convertion was successful
+        if not path.exists(outputFile):
+            print(f"Error converting {path.basename(video)} to mp3")
+            return
+        print(f"Successfully converted {path.basename(video)} to mp3")
+        
     def convertToNewFormat(self, video: str, outputDir: str, newFormat: str) -> None:
         outputFile = path.join(outputDir, path.basename(video).replace(".mp4", "." + newFormat))
-        subprocess.run(["ffmpeg", "-i", video, outputFile])
+        print(f"Converting {path.basename(video)} to {newFormat}...")
+        run(["ffmpeg", "-i", video, outputFile], stderr=DEVNULL, stdout=DEVNULL)
+        if not path.exists(outputFile):
+            print(f"Error converting {path.basename(video)} to {newFormat}")
+            return
+        print(f"Successfully converted {path.basename(video)} to {newFormat}")
+
     def convertAll(self):
         videos = self.getVideos()
         if self.__isAudio:
@@ -49,5 +74,5 @@ class Converter:
                 self.convertToMp3(video, self.getDir())
         else:
             for video in videos:
-                self.convertToNewFormat(video, self.getDir(), self.__newFormat)
+                self.convertToNewFormat(video, self.getDir(), self.getNewFormat())
         
