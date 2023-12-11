@@ -3,12 +3,13 @@ from merger import Merger
 from clipper import Clipper
 from thumb_embeder import ThumbEmbeder
 from tool import Tool
-from os import path, name as osName
+from os import path, name as osName, listdir
 from requests import get
 from zipfile import ZipFile
 from io import BytesIO
 from subprocess import run, DEVNULL
 from typing import Optional
+from shutil import move, rmtree
 
 class Program:
     def __init__(self) -> None:
@@ -50,12 +51,14 @@ class Program:
             print("ffmpeg is not installed")
             if osName == "nt":
                 print("Downloading ffmpeg...")
-                r = get("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip")
-                z = ZipFile(BytesIO(r.content))
-                # get the exe files from the zip file and move them to the Windows directory
-                for file in z.namelist():
-                    if path.splitext(file)[1] == ".exe":
-                        z.extract(file, "C:\\Windows\\System32\\")
+                request = get("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip")
+                tempDir = "temp"
+                zipFile = ZipFile(BytesIO(request.content))
+                zipFile.extractall(tempDir)
+                # move the exe files to the path
+                for file in listdir(tempDir):
+                    move(path.join(tempDir, file), path.join("C:\\", "Windows", "System32", file))
+                rmtree(tempDir)
                 print("ffmpeg downloaded")
             else:
                 print("Please install ffmpeg")

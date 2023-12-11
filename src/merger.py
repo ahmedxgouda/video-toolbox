@@ -35,13 +35,20 @@ class Merger (Tool):
         self.setVideos(videos)
     def run(self):
         print("Merging...")
-        outputFile = path.join(self.__outputDir, self.__newVideo)
-        with open("files.txt", "w") as f:
-            for video in self.__videos:
-                f.write(f"file '{video}'\n")
-        run(["ffmpeg", "-f", "concat", "-safe", "0", "-i", "files.txt", "-c", "copy", outputFile], stderr=DEVNULL, stdout=DEVNULL)
-        # remove the txt file after merging
-        run(["rm", "files.txt"])
+        outputFile = path.join(self.getDir(), self.getNewVideo())
+        filterComplex = ""
+        ffmpegCommand = ["ffmpeg"]
+        for i in range(len(self.getVideos())):
+            filterComplex += f"[{i}:v]scale=1920:1080,setsar=1/1[v{i}];"
+            ffmpegCommand.append("-i")
+            ffmpegCommand.append(self.getVideos()[i])
+        for i in range(len(self.getVideos())):
+            filterComplex += f"[{i}:a]aformat=channel_layouts=stereo[a{i}];"
+        for i in range(len(self.getVideos())):
+            filterComplex += f"[v{i}][a{i}]"
+        filterComplex += f"concat=n={len(self.getVideos())}:v=1:a=1[v][a]"
+        ffmpegCommand += ["-filter_complex", filterComplex, "-map", "[v]", "-map", "[a]", outputFile]
+        run(ffmpegCommand, stdout=DEVNULL, stderr=DEVNULL)
         if not path.exists(outputFile):
             print("Error merging")
             return
