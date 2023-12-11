@@ -3,10 +3,12 @@ from subprocess import run, DEVNULL
 from os import path, listdir, mkdir
 
 class Converter:
-    __videos: List[str] = []
-    __outputDir: str = ""
-    __isAudio: bool = False
-    __newFormat: str = ""
+    # put it in the constructor
+    def __init__(self) -> None:
+        self.__videos: List[str] = []
+        self.__outputDir: str = ""
+        self.__isAudio: bool = False
+        self.__newFormat: str = ""
     
     def setVideos(self, videos: List[str]) -> None:
         self.__videos = videos
@@ -28,7 +30,7 @@ class Converter:
     def askForInputs(self):
         print("Welcome to the converter!")
         videos = []
-        self.__isAudio = input("To what do yow want to convert 1) an audio or 2) an another video format? ").strip().lower() == "1"
+        self.setIsAudio(input("To what do yow want to convert 1) an audio or 2) an another video format? ").strip().lower() == "1")
         dirOrFile = input("Do you want to convert a 1) directory or a 2) file? ").strip()
         if dirOrFile.lower() == "1":
             dir = input("Enter the directory path: ")
@@ -40,12 +42,12 @@ class Converter:
                 if video == "":
                     break
                 videos.append(video)
-        self.__outputDir = input("Enter the output directory: ").strip()
-        if not path.exists(self.__outputDir):
-            mkdir(self.__outputDir)
-        if not self.__isAudio:
-            self.__newFormat = input("Enter the new format: ").strip()
-        self.__videos = videos
+        self.setDir(input("Enter the output directory: ").strip())
+        if not path.exists(self.getDir()):
+            mkdir(self.getDir())
+        if not self.isAudio():
+            self.setNewFormat(input("Enter the new format: ").strip())
+        self.setVideos(videos)
 
     def convertToMp3(self, video: str, outputDir: str) -> None:
         outputFile = path.join(outputDir, path.basename(video).replace(".mp4", ".mp3"))
@@ -69,7 +71,7 @@ class Converter:
 
     def convertAll(self):
         videos = self.getVideos()
-        if self.__isAudio:
+        if self.isAudio():
             for video in videos:
                 self.convertToMp3(video, self.getDir())
         else:

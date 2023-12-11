@@ -8,7 +8,7 @@ This is a collection of tools for video processing. It is based on the [FFmpeg](
 
 ### Converter
 
-Converts a video file to another format or an audio file.
+Converts video files to other formats or to audio files.
 
 ### Merger
 
@@ -16,11 +16,11 @@ Merges multiple video files into one.
 
 ### ThumbEmbeder
 
-Embeds thumbnails into video files.
+Embeds thumbnails into videos.
 
 ### Clipper
 
-Makes a clip from the seleted video
+Makes a clip from the seleted video.
 
 ## Usage
 
@@ -53,4 +53,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Class Diagram
 
-<!-- ![Class Diagram](Video-Toolbox.drawio.png) -->
+![Class Diagram](Video-Toolbox.drawio.png)

@@ -3,10 +3,10 @@ from subprocess import run, DEVNULL
 from os import path
 
 class Merger:
-    __videos: List[str] = []
-    __outputDir: str = ""
-    __newVideo: str = ""
-    
+    def __init__(self) -> None:
+        self.__videos: List[str] = []
+        self.__outputDir: str = ""
+        self.__newVideo: str = ""
     def getVideos(self) -> List[str]:
         return self.__videos
     def setVideos(self, videos: List[str]) -> None:
@@ -29,9 +29,9 @@ class Merger:
             if video == "":
                 break
             videos.append(video)
-        self.__outputDir = input("Enter the output directory: ").strip()
-        self.__newVideo = input("Enter the new video name: ").strip()
-        self.__videos = videos
+        self.setDir(input("Enter the output directory: ").strip())
+        self.setNewVideo(input("Enter the new video name: ").strip())
+        self.setVideos(videos)
     def merge(self):
         print("Merging...")
         outputFile = path.join(self.__outputDir, self.__newVideo)

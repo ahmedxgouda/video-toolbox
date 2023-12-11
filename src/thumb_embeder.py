@@ -3,10 +3,11 @@ import subprocess
 from os import path, remove, rename, mkdir
 
 class ThumbEmbeder:
-    __videos: List[str] = []
-    __images: List[str] = []
-    __outputDir: str = ""
-    __toRemove: bool = False
+    def __init__(self) -> None:
+        self.__videos: List[str] = []
+        self.__images: List[str] = []
+        self.__outputDir: str = ""
+        self.__toRemove: bool = False
 
     def setVideos(self, videos: List[str]):
         self.__videos = videos
@@ -56,17 +57,17 @@ class ThumbEmbeder:
                 rename(outputPath, videoPath.replace(path.dirname(videoPath), self.getDir()))
 
     def askForInputs(self):
-        print("Welcome to the thumb-embeder!")
+        print("Welcome to the Thumb-Embeder!")
         videos = []
         images = []
         while True:
-            video = input("Enter the video path: ")
-            image = input("Enter the image path: ")
+            video = input("Enter the video path: ").strip()
+            image = input("Enter the image path: ").strip()
             videos.append(video)
             images.append(image)
-            if input("Do you want to add more videos and images? ").lower() == "no":
+            if input("Do you want to add more videos and images? ").strip().lower() == "no":
                 break
-        self.__videos = videos
-        self.__images = images
-        self.__outputDir = input("Enter the output directory: ")
-        self.__toRemove = input("Do you want to keep the original videos? ").lower() == "no"
+        self.setVideos(videos)
+        self.setImages(images)
+        self.setDir(input("Enter the output directory: ").strip())
+        self.setToRemove(input("Do you want to keep the original videos? ").strip().lower() == "no")
