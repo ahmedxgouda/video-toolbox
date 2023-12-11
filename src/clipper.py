@@ -1,7 +1,8 @@
 from os import path, mkdir
 from subprocess import run, DEVNULL
+from tool import Tool
 
-class Clipper:
+class Clipper (Tool):
     def __init__(self) -> None:    
         self.__video = ""
         self.__outputDir = ""
@@ -39,7 +40,7 @@ class Clipper:
         self.setStart(input("Enter start time: ").strip())
         self.setEnd(input("Enter end time: ").strip())
         self.setNewVideo(input("Enter the new clip name: ").strip())
-    def clip(self) -> None:
+    def run(self) -> None:
         outputFile = path.join(self.getDir(), self.getNewVideo())
         print(f"Clipping {path.basename(self.getVideo())} from {self.getStart()} to {self.getEnd()}...")
         run(["ffmpeg", "-i", self.getVideo(), "-ss", self.getStart(), "-to", self.getEnd(), outputFile], stderr=DEVNULL, stdout=DEVNULL)

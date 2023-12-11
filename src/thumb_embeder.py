@@ -1,8 +1,9 @@
 from typing import List
 import subprocess
 from os import path, remove, rename, mkdir
+from tool import Tool
 
-class ThumbEmbeder:
+class ThumbEmbeder (Tool):
     def __init__(self) -> None:
         self.__videos: List[str] = []
         self.__images: List[str] = []
@@ -26,7 +27,7 @@ class ThumbEmbeder:
     def getDir(self) -> str:
         return self.__outputDir
 
-    def embedThumbs(self):
+    def run(self):
         videos = self.getVideos()
         images = self.getImages()
         if len(videos) != len(images):
@@ -65,9 +66,14 @@ class ThumbEmbeder:
             image = input("Enter the image path: ").strip()
             videos.append(video)
             images.append(image)
-            if input("Do you want to add more videos and images? ").strip().lower() == "no":
+            wantMore = input("Do you want to embed another thumbnail? ").strip().lower()
+            while wantMore not in ["yes", "no"]:
+                wantMore = input("Please enter yes or no: ").strip().lower()
+            if wantMore == "no":
                 break
         self.setVideos(videos)
         self.setImages(images)
         self.setDir(input("Enter the output directory: ").strip())
-        self.setToRemove(input("Do you want to keep the original videos? ").strip().lower() == "no")
+        wantToRemove = input("Do you want to remove the original videos? ").strip().lower()
+        self.validInput(wantToRemove, ["yes", "no"], lambda: self.setToRemove(True), lambda: self.setToRemove(False))
+            

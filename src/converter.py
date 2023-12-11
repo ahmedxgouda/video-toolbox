@@ -1,15 +1,16 @@
 from typing import List
 from subprocess import run, DEVNULL
 from os import path, listdir, mkdir
+from tool import Tool
 
-class Converter:
-    # put it in the constructor
+class Converter (Tool):
     def __init__(self) -> None:
         self.__videos: List[str] = []
         self.__outputDir: str = ""
         self.__isAudio: bool = False
         self.__newFormat: str = ""
     
+    # getters and setters
     def setVideos(self, videos: List[str]) -> None:
         self.__videos = videos
     def getVideos(self) -> List[str]:
@@ -30,18 +31,11 @@ class Converter:
     def askForInputs(self):
         print("Welcome to the converter!")
         videos = []
-        self.setIsAudio(input("To what do yow want to convert 1) an audio or 2) an another video format? ").strip().lower() == "1")
+        options = ["1", "2"]
+        audioOrVideo = input("Do you want to convert to 1) audio or 2) video? ").strip()
+        self.validInput(audioOrVideo, options,lambda: self.setIsAudio(True), lambda: self.setIsAudio(False))
         dirOrFile = input("Do you want to convert a 1) directory or a 2) file? ").strip()
-        if dirOrFile.lower() == "1":
-            dir = input("Enter the directory path: ")
-            videos = [path.join(dir, file) for file in listdir(dir) if path.splitext(file)[1] == ".mp4"]
-        else:
-            print("Enter the video paths. When you are done, press enter.")
-            while True:
-                video = input("Enter video path: ").strip()
-                if video == "":
-                    break
-                videos.append(video)
+        self.validInput(dirOrFile, options, lambda: self.__getDirOrvideos__(True, videos), lambda: self.__getDirOrvideos__(False, videos))
         self.setDir(input("Enter the output directory: ").strip())
         if not path.exists(self.getDir()):
             mkdir(self.getDir())
@@ -49,6 +43,18 @@ class Converter:
             self.setNewFormat(input("Enter the new format: ").strip())
         self.setVideos(videos)
 
+    def __getDirOrvideos__(self, isDir: bool, videos: List[str]) -> None:
+        if isDir:
+            inputDir = input("Enter the directory path: ")
+            videos = [path.join(inputDir, file) for file in listdir(inputDir) if path.splitext(file)[1] == ".mp4"]
+        else:
+            print("Enter the video paths. When you are done, press enter.")
+            while True:
+                video = input("Enter video path: ").strip()
+                if video == "":
+                    break
+                videos.append(video)
+        
     def convertToMp3(self, video: str, outputDir: str) -> None:
         outputFile = path.join(outputDir, path.basename(video).replace(".mp4", ".mp3"))
         # print convertion progress
@@ -69,7 +75,7 @@ class Converter:
             return
         print(f"Successfully converted {path.basename(video)} to {newFormat}")
 
-    def convertAll(self):
+    def run(self):
         videos = self.getVideos()
         if self.isAudio():
             for video in videos:
@@ -77,4 +83,3 @@ class Converter:
         else:
             for video in videos:
                 self.convertToNewFormat(video, self.getDir(), self.getNewFormat())
-        

@@ -1,8 +1,9 @@
 from typing import List
 from subprocess import run, DEVNULL
 from os import path
+from tool import Tool
 
-class Merger:
+class Merger (Tool):
     def __init__(self) -> None:
         self.__videos: List[str] = []
         self.__outputDir: str = ""
@@ -32,7 +33,7 @@ class Merger:
         self.setDir(input("Enter the output directory: ").strip())
         self.setNewVideo(input("Enter the new video name: ").strip())
         self.setVideos(videos)
-    def merge(self):
+    def run(self):
         print("Merging...")
         outputFile = path.join(self.__outputDir, self.__newVideo)
         with open("files.txt", "w") as f:

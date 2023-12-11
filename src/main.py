@@ -2,39 +2,26 @@ from converter import Converter
 from merger import Merger
 from clipper import Clipper
 from thumb_embeder import ThumbEmbeder
+from tool import Tool
 from os import path, name as osName
 from requests import get
 from zipfile import ZipFile
 from io import BytesIO
 from subprocess import run, DEVNULL
+from typing import Optional
 
 class Program:
     def __init__(self) -> None:
-        self.__embeder = ThumbEmbeder()
-        self.__converter = Converter()
-        self.__merger = Merger()
-        self.__clipper = Clipper()
-
-    def setEmbeder(self, embeder: ThumbEmbeder) -> None:
-        self.__embeder = embeder
-    def getEmbeder(self) -> ThumbEmbeder:
-        return self.__embeder
-    def setConverter(self, converter: Converter) -> None:
-        self.__converter = converter
-    def getConverter(self) -> Converter:
-        return self.__converter
-    def setMerger(self, merger: Merger) -> None:
-        self.__merger = merger
-    def getMerger(self) -> Merger:
-        return self.__merger
-    def setClipper(self, clipper: Clipper) -> None:
-        self.__clipper = clipper
-    def getClipper(self) -> Clipper:
-        return self.__clipper
+        self.__tool: Optional[Tool] = None
+        
+    def getTool(self) -> Optional[Tool]:
+        return self.__tool
+    def setTool(self, tool: Optional[Tool]) -> None:
+        self.__tool = tool
 
     def main(self):
         # check if ffmpeg is installed for windows and if not, download it and add it to the path
-        self.installFFmpeg()
+        self.__installFFmpeg()
         print("Hello to your platform to play with videos!\nWhich tool do you want to use?")
         while True:
             option = input("1) Thumb-Embeder\n2) Video-Converter\n3) Video-Merger\n4) Video-Clipper: ").strip()
@@ -42,22 +29,20 @@ class Program:
                 break
             print("Invalid option")
         if option == "1":
-            self.getEmbeder().askForInputs()
-            self.getEmbeder().embedThumbs()
+            self.setTool(ThumbEmbeder())
         elif option == "2":
-            self.getConverter().askForInputs()
-            self.getConverter().convertAll()
+            self.setTool(Converter())
         elif option == "3":
-            self.getMerger().askForInputs()
-            self.getMerger().merge()
+            self.setTool(Merger())
         elif option == "4":
-            self.getClipper().askForInputs()
-            self.getClipper().clip()
+            self.setTool(Clipper())
         else:
             print("Invalid option")
             return
+        self.getTool().askForInputs()
+        self.getTool().run()
 
-    def installFFmpeg(self) -> None:
+    def __installFFmpeg(self) -> None:
         # call ffmpeg to check if it is installed
         try:
             run(["ffmpeg", "-version"], stdout=DEVNULL, stderr=DEVNULL)
@@ -79,7 +64,7 @@ if __name__ == "__main__":
     main = Program()
     main.main()
     while True:
-        again = input("Do you want to use another tool? (y/n): ")
+        again = input("Do you want to use another tool? (y/n): ").lower().strip()
         if again == "y":
             main = Program()
             main.main()
