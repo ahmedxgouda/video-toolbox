@@ -7,15 +7,12 @@ class ThumbEmbeder (Tool):
     def __init__(self) -> None:
         self.__videos: List[str] = []
         self.__images: List[str] = []
-        self.__outputDir: str = ""
         self.__toRemove: bool = False
 
     def setVideos(self, videos: List[str]):
         self.__videos = videos
     def setImages(self, images: List[str]):
         self.__images = images
-    def setDir(self, outputDir: str):
-        self.__outputDir = outputDir
     def setToRemove(self, toRemove: bool):
         self.__toRemove = toRemove
     def toRemove(self) -> bool:
@@ -24,8 +21,6 @@ class ThumbEmbeder (Tool):
         return self.__videos
     def getImages(self) -> List[str]:
         return self.__images
-    def getDir(self) -> str:
-        return self.__outputDir
 
     def run(self):
         videos = self.getVideos()
@@ -43,7 +38,7 @@ class ThumbEmbeder (Tool):
         outputPath = outputPath.replace(path.splitext(outputPath)[1], "-thumb" + path.splitext(outputPath)[1])
         extension = path.splitext(image)[1][1:]
         print("Embedding thumbnail...")
-        subprocess.run(["ffmpeg", "-i", video, "-i", image, "-map", "0", "-map", "1", "-c", "copy", "-c:v:1", extension, "-disposition:v:1", "attached_pic", outputPath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["ffmpeg", "-i", video, "-i", image, "-map", "0", "-map", "1", "-c", "copy", "-c:v:1", extension, "-disposition:v:1", "attached_pic", outputPath])
 
         if not path.exists(outputPath):
             print("Error embedding thumbnail")
@@ -62,18 +57,18 @@ class ThumbEmbeder (Tool):
         videos = []
         images = []
         while True:
+            print("Enter the video and image paths. When you are done, press enter.")
             video = input("Enter the video path: ").strip()
+            video = self.validPath(video)
+            if video == "":
+                break
             image = input("Enter the image path: ").strip()
+            image = self.validPath(image)
             videos.append(video)
             images.append(image)
-            wantMore = input("Do you want to embed another thumbnail? ").strip().lower()
-            while wantMore not in ["yes", "no"]:
-                wantMore = input("Please enter yes or no: ").strip().lower()
-            if wantMore == "no":
-                break
         self.setVideos(videos)
         self.setImages(images)
-        self.setDir(input("Enter the output directory: ").strip())
+        super().askForInputs()
         wantToRemove = input("Do you want to remove the original videos? ").strip().lower()
         self.validInput(wantToRemove, ["yes", "no"], lambda: self.setToRemove(True), lambda: self.setToRemove(False))
             
