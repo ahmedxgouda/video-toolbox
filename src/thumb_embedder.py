@@ -1,9 +1,9 @@
 from typing import List
-import subprocess
+from subprocess import run, DEVNULL
 from os import path, remove, rename, mkdir
 from tool import Tool
 
-class ThumbEmbeder (Tool):
+class ThumbEmbedder (Tool):
     def __init__(self) -> None:
         self.__videos: List[str] = []
         self.__images: List[str] = []
@@ -38,7 +38,7 @@ class ThumbEmbeder (Tool):
         outputPath = outputPath.replace(path.splitext(outputPath)[1], "-thumb" + path.splitext(outputPath)[1])
         extension = path.splitext(image)[1][1:]
         print("Embedding thumbnail...")
-        subprocess.run(["ffmpeg", "-i", video, "-i", image, "-map", "0", "-map", "1", "-c", "copy", "-c:v:1", extension, "-disposition:v:1", "attached_pic", outputPath])
+        run(["ffmpeg", "-i", video, "-i", image, "-map", "0", "-map", "1", "-c", "copy", "-c:v:1", extension, "-disposition:v:1", "attached_pic", outputPath], stdout=DEVNULL, stderr=DEVNULL)
 
         if not path.exists(outputPath):
             print("Error embedding thumbnail")

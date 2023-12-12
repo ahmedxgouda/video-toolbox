@@ -1,7 +1,7 @@
 from converter import Converter
 from merger import Merger
 from clipper import Clipper
-from thumb_embeder import ThumbEmbeder
+from thumb_embedder import ThumbEmbedder
 from tool import Tool
 from os import path, name as osName, listdir
 from requests import get
@@ -30,7 +30,7 @@ class Program:
                 break
             print("Invalid option")
         if option == "1":
-            self.setTool(ThumbEmbeder())
+            self.setTool(ThumbEmbedder())
         elif option == "2":
             self.setTool(Converter())
         elif option == "3":
