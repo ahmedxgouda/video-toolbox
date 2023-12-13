@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Callable, List, Optional
 from os import path, mkdir
 
 class Tool:
@@ -34,4 +34,8 @@ class Tool:
     def createDirIfNotExists(self) -> None:
         if not path.exists(self.getDir()):
             mkdir(self.getDir())
+        
+    def printValidPath(self) -> None:
+        print("Example for a valid path: path/to/your/file")
+        print('''Example for a invalid path: "path/to/your/file"''')
     

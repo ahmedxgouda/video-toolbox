@@ -18,6 +18,7 @@ class Merger (Tool):
     def askForInputs(self):
         print("Welcome to the merger!")
         print("Enter the video paths. When you are done, press enter.")
+        self.printValidPath()
         videos = []
         while True:
             video = input("Enter video path: ").strip()
@@ -30,7 +31,7 @@ class Merger (Tool):
         self.setVideos(videos)
     def run(self):
         print("Merging...")
-        outputFile = path.join(self.getDir(), self.getNewVideo(), ".mp4")
+        outputFile = path.join(self.getDir(), self.getNewVideo() + ".mp4")
         # for changing the resolution of every video to 1920x1080
         filterComplexVideo = ""
         # for changing the audio channel layout to stereo
@@ -41,7 +42,7 @@ class Merger (Tool):
         ffmpegCommand = ["ffmpeg"]
         for i in range(len(self.getVideos())):
             filterComplexVideo += f"[{i}:v]scale=1920:1080,setsar=1/1[v{i}];"
-            filterComplexAudio= f"[{i}:a]aformat=channel_layouts=stereo[a{i}];"
+            filterComplexAudio += f"[{i}:a]aformat=channel_layouts=stereo[a{i}];"
             filterComplexOutput += f"[v{i}][a{i}]"
             ffmpegCommand.append("-i")
             ffmpegCommand.append(self.getVideos()[i])

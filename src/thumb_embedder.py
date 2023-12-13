@@ -54,12 +54,15 @@ class ThumbEmbedder (Tool):
 
     def askForInputs(self):
         print("Welcome to the Thumb-Embeder!")
+        print("Enter the video and image paths. When you are done, press enter.")
+        self.printValidPath()
         videos = []
         images = []
         while True:
-            print("Enter the video and image paths. When you are done, press enter.")
             video = input("Enter the video path: ").strip()
             video = self.validPath(video)
+            while video != "" and path.splitext(video)[1] != ".mp4":
+                video = input("The embedder only accepts mp4 format, use the Converter to to mp4, if you want, or you can enter another video path: ")
             if video == "":
                 break
             image = input("Enter the image path: ").strip()

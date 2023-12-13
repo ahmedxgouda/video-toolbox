@@ -54,6 +54,7 @@ class Converter (Tool):
                     videos.append(path.join(inputDir, file))
         else:
             print("Enter the video paths. When you are done, press enter.")
+            self.printValidPath()
             while True:
                 video = input("Enter video path: ").strip()
                 video = self.validPath(video)
@@ -85,6 +86,7 @@ class Converter (Tool):
         videos = self.getVideos()
         if self.isAudio():
             for video in videos:
+                
                 self.convertToMp3(video, self.getDir())
         else:
             for video in videos:

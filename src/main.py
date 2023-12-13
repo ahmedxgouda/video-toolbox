@@ -22,8 +22,8 @@ class Program:
 
     def main(self):
         # check if ffmpeg is installed for windows and if not, download it and add it to the path
-        self.__installFFmpeg()
         print("Hello to your platform to play with videos!\nWhich tool do you want to use?")
+        self.__installFFmpeg()
         while True:
             option = input("1) Thumb-Embeder\n2) Video-Converter\n3) Video-Merger\n4) Video-Clipper: ").strip()
             if option in ["1", "2", "3", "4"]:
@@ -50,14 +50,16 @@ class Program:
         except:
             print("ffmpeg is not installed")
             if osName == "nt":
-                print("Downloading ffmpeg...")
-                request = get("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip")
+                # show progress bar while downloading
+                print("Downloading ffmpeg")
+                request = get("https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-6.0-essentials_build.zip")
+                # extract the zip file
                 tempDir = "temp"
                 zipFile = ZipFile(BytesIO(request.content))
                 zipFile.extractall(tempDir)
                 # move the exe files to the path
-                for file in listdir(tempDir):
-                    move(path.join(tempDir, file), path.join("C:\\", "Windows", "System32", file))
+                for file in listdir(path.join(tempDir, "ffmpeg-6.0-essentials_build", "bin")):
+                    move(path.join(tempDir, "ffmpeg-6.0-essentials_build", "bin", file), path.join("C:\\", "Windows", "System32"))
                 rmtree(tempDir)
                 print("ffmpeg downloaded")
             else:

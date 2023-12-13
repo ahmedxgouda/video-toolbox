@@ -33,6 +33,7 @@ class Clipper (Tool):
     
     def askForInputs(self) -> None:
         print("Welcome to the clipper!")
+        self.printValidPath()
         video = input("Enter the video path: ").strip()
         video = self.validPath(video)
         self.setVideo(video)
@@ -42,7 +43,7 @@ class Clipper (Tool):
         self.setEnd(input("Enter end time: ").strip())
         self.setNewVideo(input("Enter the new clip name: ").strip())
     def run(self) -> None:
-        outputFile = path.join(self.getDir(), self.getNewVideo(), ".mp4")
+        outputFile = path.join(self.getDir(), self.getNewVideo() + ".mp4")
         print(f"Clipping {path.basename(self.getVideo())} from {self.getStart()} to {self.getEnd()}...")
         run(["ffmpeg", "-i", self.getVideo(), "-ss", self.getStart(), "-to", self.getEnd(), outputFile], stderr=DEVNULL, stdout=DEVNULL)
         if not path.exists(outputFile):
