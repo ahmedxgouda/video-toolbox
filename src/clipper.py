@@ -45,6 +45,8 @@ class Clipper (Tool):
     def run(self) -> None:
         outputFile = path.join(self.getDir(), self.getNewVideo() + ".mp4")
         print(f"Clipping {path.basename(self.getVideo())} from {self.getStart()} to {self.getEnd()}...")
+        if self.keepOutputIfExists(outputFile):
+            return
         run(["ffmpeg", "-i", self.getVideo(), "-ss", self.getStart(), "-to", self.getEnd(), outputFile], stderr=DEVNULL, stdout=DEVNULL)
         if not path.exists(outputFile):
             print(f"Error clipping {path.basename(self.getVideo())}")

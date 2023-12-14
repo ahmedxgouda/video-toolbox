@@ -1,6 +1,6 @@
 from typing import List
 from subprocess import run, DEVNULL
-from os import path, listdir, mkdir
+from os import path, listdir, mkdir, remove
 from tool import Tool
 
 class Converter (Tool):
@@ -33,9 +33,9 @@ class Converter (Tool):
         videos = []
         options = ["1", "2"]
         audioOrVideo = input("Please, choose the conversion type:\n1) Video -> Audio\n2) Video -> Another Format of Video ").strip()
-        self.validInput(audioOrVideo, options, lambda: self.setIsAudio(True), lambda: self.setIsAudio(False))
+        self.validInput(audioOrVideo, options, [lambda: self.setIsAudio(True), lambda: self.setIsAudio(False)])
         dirOrFile = input("Do you want to convert a 1) directory or a 2) file? ").strip()
-        self.validInput(dirOrFile, options, lambda: self.__getDirOrvideos__(True, videos), lambda: self.__getDirOrvideos__(False, videos))
+        self.validInput(dirOrFile, options, [lambda: self.__getDirOrvideos__(True, videos), lambda: self.__getDirOrvideos__(False, videos)])
         super().askForInputs()
         self.setVideos(videos)
 
@@ -66,6 +66,8 @@ class Converter (Tool):
         outputFile = path.join(outputDir, path.basename(video).replace(path.splitext(video)[1], ".mp3"))
         # print convertion progress
         print(f"Converting {path.basename(video)} to mp3...")
+        if self.keepOutputIfExists(outputFile):
+            return
         run(["ffmpeg", "-i", video, "-vn", "-ar", "44100", "-ac", "2", "-ab", "192k", "-f", "mp3", outputFile], stderr=DEVNULL, stdout=DEVNULL)
         # check if convertion was successful
         if not path.exists(outputFile):
@@ -76,6 +78,8 @@ class Converter (Tool):
     def convertToNewFormat(self, video: str, outputDir: str, newFormat: str) -> None:
         outputFile = path.join(outputDir, path.basename(video).replace(path.splitext(video)[1], "." + newFormat))
         print(f"Converting {path.basename(video)} to {newFormat}...")
+        if self.keepOutputIfExists(outputFile):
+            return
         run(["ffmpeg", "-i", video, outputFile], stderr=DEVNULL, stdout=DEVNULL)
         if not path.exists(outputFile):
             print(f"Error converting {path.basename(video)} to {newFormat}")

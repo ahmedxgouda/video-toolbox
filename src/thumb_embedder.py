@@ -38,6 +38,8 @@ class ThumbEmbedder (Tool):
         outputPath = outputPath.replace(path.splitext(outputPath)[1], "-thumb" + path.splitext(outputPath)[1])
         extension = path.splitext(image)[1][1:]
         print("Embedding thumbnail...")
+        if self.keepOutputIfExists(outputPath):
+            return
         run(["ffmpeg", "-i", video, "-i", image, "-map", "0", "-map", "1", "-c", "copy", "-c:v:1", extension, "-disposition:v:1", "attached_pic", outputPath], stdout=DEVNULL, stderr=DEVNULL)
 
         if not path.exists(outputPath):
@@ -73,5 +75,5 @@ class ThumbEmbedder (Tool):
         self.setImages(images)
         super().askForInputs()
         wantToRemove = input("Do you want to remove the original videos? ").strip().lower()
-        self.validInput(wantToRemove, ["yes", "no"], lambda: self.setToRemove(True), lambda: self.setToRemove(False))
+        self.validInput(wantToRemove, ["yes", "no"], [lambda: self.setToRemove(True), lambda: self.setToRemove(False)])
             

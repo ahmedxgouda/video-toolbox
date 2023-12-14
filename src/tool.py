@@ -1,5 +1,5 @@
 from typing import Callable, List, Optional
-from os import path, mkdir
+from os import path, mkdir, remove
 
 class Tool:
     def __init__(self) -> None:
@@ -9,13 +9,13 @@ class Tool:
     def getDir(self) -> str:
         return self.__outputDir
     
-    def validInput(self, inp: str, options: List[str], thunk1: Callable[[], None], thunk2: Callable[[], None]) -> None:
+    def validInput(self, inp: str, options: List[str], thunks: List[Callable[[], None]]) -> None:
         while inp not in options:
             inp = input("Invalid input. Please try again: ").strip()
-        if inp == options[0]:
-            thunk1()
-        else:
-            thunk2()
+        for i in range(len(options)):
+            if inp == options[i]:
+                thunks[i]()
+                break
     def askForInputs(self) -> None:
         self.setDir(input("Enter the output directory: ").strip())
         self.createDirIfNotExists()
@@ -39,3 +39,13 @@ class Tool:
         print("Example for a valid path: path/to/your/file")
         print('''Example for a invalid path: "path/to/your/file"''')
     
+    def keepOutputIfExists(self, outputFile: str) -> bool:
+        if path.exists(outputFile):
+            replace = input("There is a file with the same name as your output, do you want to replace it? (y/n) ").strip()
+            while replace not in ["y", "n"]:
+                replace = input("Invalid input. Please try again: ").strip()
+            if replace == "y":
+                remove(outputFile)
+                return False
+            return True
+        return False

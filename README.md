@@ -27,7 +27,7 @@ Makes a clip from the seleted video.
 ### For Windows
 
 1. You can download ffmpeg and add it to the path variable, but the program will do it for you (you need to run the first time as administrator).
-2. Download the latest release from [here](https://github.com/ahmedxgouda/video-toolbox/releases/tag/v.1.0.0).
+2. Download the latest release.
 3. Run the program.
 4. Select the tool you want to use.
 5. Follow the instructions.
