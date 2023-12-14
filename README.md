@@ -12,7 +12,7 @@ Converts video files to other formats or to audio files.
 
 ### Merger
 
-Merges multiple video files into one.
+Merges multiple video files into one (even if they have different formats, resolutions and codecs!).
 
 ### ThumbEmbeder
 
