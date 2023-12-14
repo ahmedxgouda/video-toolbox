@@ -61,7 +61,7 @@ class Merger (Tool):
         filterComplex = filterComplexVideo + filterComplexAudio + filterComplexOutput
         filterComplex += f"concat=n={len(self.getVideos())}:v=1:a=1[v][a]"
         ffmpegCommand += ["-filter_complex", filterComplex, "-map", "[v]", "-map", "[a]", outputFile]
-        run(ffmpegCommand)
+        run(ffmpegCommand, stdout=DEVNULL, stderr=DEVNULL)
         if not path.exists(outputFile):
             print("Error merging")
             return
