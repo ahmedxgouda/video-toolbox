@@ -35,7 +35,7 @@ class ThumbEmbedder (Tool):
             mkdir(self.getDir())
 
         outputPath = video.replace(path.dirname(video), self.getDir())
-        outputPath = outputPath.replace(path.splitext(outputPath)[1], "-thumb" + path.splitext(outputPath)[1])
+        outputPath = outputPath.replace(path.splitext(outputPath)[1], "-thumb.mp4")
         extension = path.splitext(image)[1][1:]
         print("Embedding thumbnail...")
         if self.keepOutputIfExists(outputPath):

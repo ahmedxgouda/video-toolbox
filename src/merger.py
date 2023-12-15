@@ -34,9 +34,10 @@ class Merger (Tool):
             videos.append(video)
         super().askForInputs()
         self.setNewVideo(input("Enter the new video name: ").strip())
-        quality = input("Choose the quality of the video from the optionts below:\n1) 1080p\n2) 720p\n3) 480p\n4) 360p: ").strip()
-        options = ["1", "2", "3", "4"]
-        self.validInput(quality, options, [lambda: self.setResolution(("1920", "1080")), lambda: self.setResolution(("1280", "720")), lambda: self.setResolution(("854", "480")), lambda: self.setResolution(("640", "360"))])
+        quality = input("Choose the quality of the video from the optionts below:\n1) 1080p\n2) 720p\n3) 480p\n4) 360p\n5) 240p\n6) 144p\nEnter the number of the option: ").strip()
+        options = ["1", "2", "3", "4", "5", "6"]
+        thunks = [lambda: self.setResolution(("1920", "1080")), lambda: self.setResolution(("1280", "720")), lambda: self.setResolution(("854", "480")), lambda: self.setResolution(("640", "360")), lambda: self.setResolution(("426", "240")), lambda: self.setResolution(("256", "144"))]
+        self.validInput(quality, options, thunks)
         self.setVideos(videos)
     def run(self):
         print("Merging...")
@@ -52,7 +53,7 @@ class Merger (Tool):
         # The command to run
         ffmpegCommand = ["ffmpeg"]
         for i in range(len(self.getVideos())):
-            filterComplexVideo += f"[{i}:v]scale={self.getResolution()[0]}:{self.getResolution()[1]}[v{i}];"
+            filterComplexVideo += f"[{i}:v]scale={self.getResolution()[0]}:{self.getResolution()[1]},setsar=1/1[v{i}];"
             filterComplexAudio += f"[{i}:a]aformat=channel_layouts=stereo[a{i}];"
             filterComplexOutput += f"[v{i}][a{i}]"
             ffmpegCommand.append("-i")

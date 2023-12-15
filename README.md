@@ -14,7 +14,7 @@ Converts video files to other formats or to audio files.
 
 Merges multiple video files into one (even if they have different formats, resolutions and codecs!).
 
-### ThumbEmbeder
+### ThumbEmbedder
 
 Embeds thumbnails into videos.
 
