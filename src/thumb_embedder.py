@@ -7,16 +7,21 @@ class ThumbEmbedder (Tool):
     def __init__(self) -> None:
         self.__videos: List[str] = []
         self.__images: List[str] = []
-        self.__toRemove: bool = False
+        self.__toRemoveVideo: bool = False
+        self.__toRemoveImage: bool = False
 
     def setVideos(self, videos: List[str]):
         self.__videos = videos
     def setImages(self, images: List[str]):
         self.__images = images
-    def setToRemove(self, toRemove: bool):
-        self.__toRemove = toRemove
-    def toRemove(self) -> bool:
-        return self.__toRemove
+    def setToRemoveVideo(self, toRemove: bool):
+        self.__toRemoveVideo = toRemove
+    def toRemoveVideo(self) -> bool:
+        return self.__toRemoveVideo
+    def setToRemoveImage(self, toRemove: bool):
+        self.__toRemoveImage = toRemove
+    def toRemoveImage(self) -> bool:
+        return self.__toRemoveImage
     def getVideos(self) -> List[str]:
         return self.__videos
     def getImages(self) -> List[str]:
@@ -36,23 +41,37 @@ class ThumbEmbedder (Tool):
 
         outputPath = video.replace(path.dirname(video), self.getDir())
         outputPath = outputPath.replace(path.splitext(outputPath)[1], "-thumb.mp4")
-        extension = path.splitext(image)[1][1:]
         print("Embedding thumbnail...")
         if self.keepOutputIfExists(outputPath):
             return
-        run(["ffmpeg", "-i", video, "-i", image, "-map", "0", "-map", "1", "-c", "copy", "-c:v:1", extension, "-disposition:v:1", "attached_pic", outputPath], stdout=DEVNULL, stderr=DEVNULL)
+        run(["ffmpeg",
+        "-i",
+        video,
+        "-i",
+        image,
+        "-map",
+        "0",
+        "-map",
+        "1",
+        "-c",
+        "copy",
+        "-disposition:v:1",
+        "attached_pic",
+        outputPath], stdout=DEVNULL, stderr=DEVNULL)
 
         if not path.exists(outputPath):
             print("Error embedding thumbnail")
             return
         print("Successfully embedded thumbnail")
-        self.__removeOriginal(video, outputPath)
-    def __removeOriginal(self, videoPath: str, outputPath: str):
-        if self.toRemove():
+        self.__removeOriginal(video, outputPath, image)
+    def __removeOriginal(self, videoPath: str, outputPath: str, image: str):
+        if self.toRemoveVideo():
             if path.exists(outputPath):
                 remove(videoPath)
                 # rename the output file to the original name with the output directory
                 rename(outputPath, videoPath.replace(path.dirname(videoPath), self.getDir()))
+        if self.toRemoveImage():
+            remove(image)
 
     def askForInputs(self):
         print("Welcome to the Thumb-Embeder!")
@@ -74,6 +93,8 @@ class ThumbEmbedder (Tool):
         self.setVideos(videos)
         self.setImages(images)
         super().askForInputs()
-        wantToRemove = input("Do you want to remove the original videos? ").strip().lower()
-        self.validInput(wantToRemove, ["yes", "no"], [lambda: self.setToRemove(True), lambda: self.setToRemove(False)])
-            
+        wantToRemoveVideos = input("Do you want to remove the original videos? ").strip().lower()
+        wantToRemoveImages = input("Do you want to remove the original images? ").strip().lower()
+        self.validInput(wantToRemoveVideos, ["yes", "no"], [lambda: self.setToRemoveVideo(True), lambda: self.setToRemoveVideo(False)])
+        self.validInput(wantToRemoveImages, ["yes", "no"], [lambda: self.setToRemoveImage(True), lambda: self.setToRemoveImage(False)])
+        
