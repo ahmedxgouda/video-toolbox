@@ -36,6 +36,18 @@ class ThumbEmbedder (Tool):
             self.embedThumb(videos[i], images[i])
 
     def embedThumb(self, video: str, image: str):
+        # Check if the provided video is a valid video file
+        valid_video_extensions = [".mp4", ".avi", ".mov", ".mkv", ".flv"]
+        if path.splitext(video)[1].lower() not in valid_video_extensions:
+            print(f"Invalid video file: {video}. Supported formats are: {', '.join(valid_video_extensions)}.")
+            return
+
+        # Check if the provided image is a valid image file
+        valid_image_extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
+        if path.splitext(image)[1].lower() not in valid_image_extensions:
+            print(f"Invalid image file: {image}. Supported formats are: {', '.join(valid_image_extensions)}.")
+            return
+
         if not path.exists(self.getDir()):
             mkdir(self.getDir())
 
@@ -44,6 +56,7 @@ class ThumbEmbedder (Tool):
         print("Embedding thumbnail...")
         if self.keepOutputIfExists(outputPath):
             return
+
         run(["ffmpeg",
         "-i",
         video,
@@ -64,6 +77,7 @@ class ThumbEmbedder (Tool):
             return
         print("Successfully embedded thumbnail")
         self.__removeOriginal(video, outputPath, image)
+
     def __removeOriginal(self, videoPath: str, outputPath: str, image: str):
         if self.toRemoveVideo():
             if path.exists(outputPath):
@@ -97,4 +111,3 @@ class ThumbEmbedder (Tool):
         wantToRemoveImages = input("Do you want to remove the original images? ").strip().lower()
         self.validInput(wantToRemoveVideos, ["yes", "no"], [lambda: self.setToRemoveVideo(True), lambda: self.setToRemoveVideo(False)])
         self.validInput(wantToRemoveImages, ["yes", "no"], [lambda: self.setToRemoveImage(True), lambda: self.setToRemoveImage(False)])
-        
